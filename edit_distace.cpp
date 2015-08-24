@@ -32,12 +32,15 @@ int getShortestEditDistance(string a, string b) {
 
     int dp_table[la+1][lb+1] ;
 
+    //初始化第一列
     for (int i = 0; i <= la; ++i)
         dp_table[i][0] = i;
    
+    //初始化第一行
     for (int j = 0; j <= lb; ++j)
         dp_table[0][j] = j;
 
+    //生成编辑距离动态规划记录表
     for (int i = 1; i < la + 1; ++i) {
         for (int j =1; j < lb + 1; ++j) {
             int cost = a[i-1] == b[j-1] ? 0 : 1; //相等则需要替换
@@ -50,14 +53,15 @@ int getShortestEditDistance(string a, string b) {
         }
     }
 
+    //打印编辑距离记录表
     for (int i = 0; i < la + 1; ++i) {
         for (int j = 0; j < lb + 1; ++j) {
             cout << dp_table[i][j] << " ";
         }
         cout << endl;
     }
-
-
+    
+    //右下角即为所求
     return dp_table[la][lb];
 }
 
