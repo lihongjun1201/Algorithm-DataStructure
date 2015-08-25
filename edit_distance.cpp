@@ -23,10 +23,10 @@ size_t nBytesCode(const char ch)
 	size_t nBytes = 0;
 	if(ch &(1 << 7))
 	{//对中文进行处理-utf8编码
-		if((ch & 0xF0) == 0xC0 || (ch & 0xF0) == 0xD0)   //  1111 0000
-		{												 // &11xx xxxx
-			nBytes += 2;								 //  1100 0000	
-		}												 //  1101 0000
+		if((ch & 0xF0) == 0xC0 || (ch & 0xF0) == 0xD0)  
+		{											
+			nBytes += 2;								 
+		}											
 		else if((ch & 0xF0) == 0xE0)
 		{
 			nBytes += 3;
@@ -65,15 +65,8 @@ std::size_t length(const std::string &str)
 }
 
 
+
 //三者取最小
-int triple_min(const int &a, const int &b, const int &c)
-{
-	return a < b ? (a < c ? a : c) : (b < c ? b : c);
-}
-
-
-
-
 int minInThree(int a,int b,int c) {
     int t = a < b ? a : b;
     return t < c ? t : c;
@@ -81,33 +74,34 @@ int minInThree(int a,int b,int c) {
 
 
 int getShortestEditDistance(string a, string b) {
+    //获取两个字符串逻辑长度
     int la = length(a);
     int lb = length(b);
 
-    cout << la << " "  << lb << endl;
+    int dp_table[la+1][lb+1] ; //创建动态规划表
 
-    int dp_table[la+1][lb+1] ;
-
+    //初始化 行与列
     for (int i = 0; i <= la; ++i)
         dp_table[i][0] = i;
    
     for (int j = 0; j <= lb; ++j)
         dp_table[0][j] = j;
 
-    
+    //动态规划
     string suba,subb;
     for (int dist_i = 1, a_idx = 0; dist_i < la + 1; ++dist_i, ++a_idx) {
-        int nBytes = nBytesCode(a[a_idx]);
-
+        //实际编码
+        int nBytes = nBytesCode(a[a_idx]); 
         suba = a.substr(a_idx,nBytes);
         a_idx += (nBytes - 1);
 
         for(int dist_j = 1,b_idx = 0; dist_j < lb + 1 ;++dist_j,++b_idx) {
+            //实际编码
             nBytes = nBytesCode(b[b_idx]);
             subb = b.substr(b_idx,nBytes);
             b_idx += (nBytes - 1);
 
-            int cost = suba == subb ? 0 : 1;
+            int cost = suba == subb ? 0 : 1;   //不相等则需要替换
             
             int deletion = dp_table[dist_i-1][dist_j] + 1;
             int insertion = dp_table[dist_i][dist_j-1] + 1;
@@ -201,10 +195,6 @@ int main(void) {
     
     int dis7 =  getShortestEditDistance("乔丹篮球之神","乔峰丐帮之神");
     cout << "中文----最短编辑路径为：" << dis7 <<endl;
-
-
-
-
 
     return 0;
 }
