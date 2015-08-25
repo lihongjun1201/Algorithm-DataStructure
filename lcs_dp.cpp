@@ -15,6 +15,7 @@ using namespace std;
 int c[100][100]; //动态规划记录表
 int b[100][100]; //方向记录表
 
+//时间复杂度 O（m*n）
 void LCS(string x, string y) {
     int m = x.size();
     int n = y.size();
@@ -60,7 +61,8 @@ void LCS(string x, string y) {
     for (int i = 0; i <= m ; ++i ) {
         for (int j = 0; j <=n; ++j) {
             
-#if 0
+#if 0 
+            测试
             if (b[i][j] == 0)
                 cout << "左上角"  << "  ";
             if (b[i][j] == 1)
@@ -76,17 +78,20 @@ void LCS(string x, string y) {
 
 }
 
+
+//从右下角开始回溯，直到横/纵坐标为0 退出递归
+//时间复杂度 O(m + n)
 void print_lcs(string x,int i,int j) {
     if ( (i == 0) || (j == 0) )
         return;
 
-    if (b[i][j] == 0) {
+    if (b[i][j] == 0) {  // 0: 左上角
         print_lcs(x,i-1,j-1);
         cout << x[i-1] << " ";  //注意字符串X 下标从0开始，算法导论从1开始
     }
-    else if (b[i][j] == 1)
+    else if (b[i][j] == 1)  // 1: 正上方
         print_lcs(x,i-1,j);
-    else
+    else                    // 2：左边
         print_lcs(x,i,j-1);
 }
 
