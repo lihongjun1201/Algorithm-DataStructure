@@ -8,7 +8,10 @@
 #include<iostream>
 #include<vector>
 #include<string>
+#include<queue>
 #include<memory>
+
+
 
 using namespace std;
 
@@ -31,7 +34,7 @@ typedef struct node {
 
 
 
-//图
+//图 --邻接表表示
 typedef struct graph {
     vector<shared_ptr<Node_t>> nodes;  //保存图的每个顶点
 }Graph_t;
@@ -72,12 +75,50 @@ void dfs(Graph_t &g) {
     cout << endl;
 }
 
+
+
+//--------------------------------------------------------------------------
+
+#if 1
+//图的广度优先搜索
+void _bfs_visit(shared_ptr<Node_t> node) {
+    queue<shared_ptr<Node_t>> queue;
+    queue.push(node);
+
+    while(!queue.empty()) {
+        auto v = queue.front();
+        v->color = "black";
+        queue.pop();
+        cout << v->node_name << endl;
+        for (int i = 0; i < v->adj_nodes.size(); ++i) {
+            if (v->adj_nodes[i]->color == "white") {
+                v->adj_nodes[i]->color = "gray";
+                queue.push(v->adj_nodes[i]);
+            }
+        }     
+    }
+
+}
+
+void bfs(Graph_t &graph) {
+    for (int i = 0; i < graph.nodes.size(); ++i) {
+        if(graph.nodes[i]->color == "white")
+            _bfs_visit(graph.nodes[i]);
+    }  
+}
+
 #endif
 
-Graph_t graph;
+
+#endif
 
 
-//初始化图
+
+
+
+
+
+//初始化图  (测试数据为算法导论P351的有向图)
 void initGraph(Graph_t &graph) {
     //创建图中的各个顶点
     shared_ptr<Node_t> spu(new Node_t(1,"u") );
@@ -92,7 +133,6 @@ void initGraph(Graph_t &graph) {
     //u的出边：u->v , u->x
     spu->adj_nodes.push_back(spv);
     spu->adj_nodes.push_back(spx);
-    
     
     //v: v->y
     spv->adj_nodes.push_back(spy);
@@ -119,7 +159,7 @@ void initGraph(Graph_t &graph) {
     graph.nodes.push_back(spz);
 }
 
-
+//打印图的信息
 void showGraph(Graph_t &graph) {
     for ( int i = 0; i < graph.nodes.size(); ++i) {
         cout << "顶点序号: " << graph.nodes[i]->id << endl;
@@ -127,44 +167,28 @@ void showGraph(Graph_t &graph) {
         cout << "顶点颜色: " << graph.nodes[i]->color << endl;
         cout << "首次发现时间: " << graph.nodes[i]->first_discovery_time << endl;
         cout << "最终访问时间: " << graph.nodes[i]->final_visited_time << endl;
-        cout << "该点出边所指邻居个数： "<< graph.nodes[i]->adj_nodes.size() << " ";
-
+        cout << "该点出边所指邻居个数： "<< graph.nodes[i]->adj_nodes.size() << endl;
         
-        cout << endl << "邻居为: " << endl ;
-        
+        cout << "邻居为: " << endl ;
         for ( int j = 0; j < graph.nodes[i]->adj_nodes.size(); ++j ) {
             cout << graph.nodes[i]->node_name << "->" 
                  << graph.nodes[i]->adj_nodes[j]->node_name << ", ";
         }
-
         cout <<endl<<endl;        
     }
-    
     cout << endl;
 }
 
 
 int main(void) {
+
+    Graph_t graph;
     initGraph(graph);
     
-    cout << "图的深度访问顺序为：" << endl;
-    dfs(graph);
+    cout << "图的广度访问顺序为：" << endl;
+    bfs(graph);
     
     showGraph(graph);
-    
-#if 0
-    for ( int i = 0; i < graph.nodes.size(); ++i) {
-            cout << graph.nodes[i]->id << " ";
-            cout << graph.nodes[i]->node_name << " ";
-            cout << graph.nodes[i]->color << " ";
-            cout << graph.nodes[i]->first_discovery_time << " ";
-            cout << graph.nodes[i]->final_visited_time << " ";
-            cout << endl;
-        }
-        cout << endl;
-#endif
-
-
 
     return 0;
 }
